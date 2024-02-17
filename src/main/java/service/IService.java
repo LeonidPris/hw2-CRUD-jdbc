@@ -1,5 +1,11 @@
 package service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 /**
  * Интервейс опреджеляет методы для сервисов
  * */
@@ -8,26 +14,23 @@ public interface IService<T> {
     /**
      * Метод должен передавать репозиторию сущность для сохранения в БД,
      * при успехе возвращать true.
-     * @param entity сущность полученная от контроллера
      * */
-    boolean createNew(T entity);
+    void createNew(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
      * Метод должен запрашивать у репозитория сущность по id
      * @param id - id элемента таблицы базы данных
      * */
-    T findById(int id);
+    String findById(int id) throws JsonProcessingException;
 
     /**
      * Метод должен передавать сущность репозиторию для обновления в БД
-     * @param entity объект-сущность
      * */
-    boolean updateData(T entity);
+    void updateData(HttpServletRequest request, HttpServletResponse response) throws IOException;
 
     /**
      * Метод должен передать репозиторию id сущности для удаления из БД
-     * @param id - id элемента таблицы базы данных
      * */
-    boolean deleteById(int id);
+    void delete (HttpServletRequest request, HttpServletResponse response);
 
 }

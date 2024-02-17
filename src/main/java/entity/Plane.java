@@ -1,30 +1,16 @@
 package entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Plane {
     private int id;
     private String flight;
     List<Ticket> tickets;
-
-    public Plane(int id, String flight, List<Ticket> tickets) {
-        this.id = id;
-        this.flight = flight;
-        this.tickets = tickets;
-    }
-
-    public Plane(String flight, List<Ticket> tickets) {
-        this.flight = flight;
-        this.tickets = tickets;
-    }
-    public Plane(int id, String flight) {
-        this.id = id;
-        this.flight = flight;
-        this.tickets = null;
-    }
-
-
 }
