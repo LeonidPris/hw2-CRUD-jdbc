@@ -14,7 +14,7 @@ public interface Repository<T> {
      * Метод должен возвращать из базы данных сущность по id
      * @param id - id элемента таблицы базы данных
      * */
-    T read(int id);
+    T findById(int id);
 
     /**
      * Метод должен обновить состояние переданной сущности в базе данных
@@ -26,5 +26,5 @@ public interface Repository<T> {
      * Метод должен удалить сущность из базы данных по id
      * @param id - id элемента таблицы базы данных
      * */
-    boolean delete(int id);
+    boolean deleteById(int id);
 }

@@ -2,6 +2,7 @@ package repositories;
 
 import connect.ConnectionDB;
 import entity.Ticket;
+import entity.blprnts.Person;
 import mappers.TicketMapper;
 
 import java.sql.Connection;
@@ -32,13 +33,13 @@ public class TicketRepository implements Repository<Ticket> {
     }
 
     @Override
-    public Ticket read(int id) {
+    public Ticket findById(int id) {
         Ticket ticket = null;
         try (Connection connection = ConnectionDB.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("Select *  from Ticket  where ticket_id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 ticket = TicketMapper.map(rs);
             }
 
@@ -53,23 +54,19 @@ public class TicketRepository implements Repository<Ticket> {
     @Override
     public boolean update(Ticket entity) {
         int updateFlag = 0;
-        try(Connection connection = ConnectionDB.getConnection()){
+        try (Connection connection = ConnectionDB.getConnection()) {
             Ticket ticket = null;
             String sql = "Select * from Ticket where ticket_id = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, entity.getId());
             ResultSet rs = ps.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 ticket = TicketMapper.map(rs);
             }
 
-            if (ticket != null){
+            if (ticket != null) {
                 String sqlUpd = "UPDATE Ticket SET place = ?, person_id = ?, plane_id = ? where ticket_id = ?";
-                PreparedStatement psUpd = connection.prepareStatement(sqlUpd);
-                psUpd.setString(1, entity.getPlace());
-                psUpd.setInt(2, entity.getPersonId());
-                psUpd.setInt(2, entity.getPlaneId());
-                psUpd.setInt(3, ticket.getId());
+                PreparedStatement psUpd = checkFields(entity, ticket, connection, sqlUpd);
                 updateFlag = psUpd.executeUpdate();
 
                 connection.close();
@@ -83,9 +80,9 @@ public class TicketRepository implements Repository<Ticket> {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean deleteById(int id) {
         int deleteFlag;
-        try(Connection connection = ConnectionDB.getConnection()){
+        try (Connection connection = ConnectionDB.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("Delete from Ticket where ticket_id = ?");
             ps.setInt(1, id);
             deleteFlag = ps.executeUpdate();
@@ -114,5 +111,26 @@ public class TicketRepository implements Repository<Ticket> {
             e.printStackTrace();
         }
         return tickets;
+    }
+
+    private PreparedStatement checkFields(Ticket newTicket, Ticket ticketForUpd, Connection connection, String sql) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        if (newTicket.getPlace() != null) {
+            preparedStatement.setString(1, newTicket.getPlace());
+        } else {
+            preparedStatement.setString(1, ticketForUpd.getPlace());
+        }
+        if (newTicket.getPersonId() != 0) {
+            preparedStatement.setInt(2, newTicket.getPersonId());
+        } else {
+            preparedStatement.setInt(2, ticketForUpd.getPersonId());
+        }
+        if (newTicket.getPlaneId() != 0) {
+            preparedStatement.setInt(3, newTicket.getPlaneId());
+        } else {
+            preparedStatement.setInt(3, ticketForUpd.getPlaneId());
+        }
+        preparedStatement.setInt(4, ticketForUpd.getId());
+        return preparedStatement;
     }
 }

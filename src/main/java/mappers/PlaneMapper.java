@@ -10,7 +10,10 @@ import java.util.List;
 
 public class PlaneMapper{
     public static Plane map(ResultSet resultSet) throws SQLException {
-        return new Plane(resultSet.getInt("plane_id"), resultSet.getString("flight"));
+        Plane plane =  new Plane();
+        plane.setId(resultSet.getInt("plane_id"));
+        plane.setFlight(resultSet.getString("flight"));
+        return plane;
     }
 
 

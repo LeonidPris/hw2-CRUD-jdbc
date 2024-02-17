@@ -29,7 +29,7 @@ public class PlaneRepository implements Repository<Plane> {
     }
 
     @Override
-    public Plane read(int id) {
+    public Plane findById(int id) {
         Plane plane = null;
         try (Connection connection = ConnectionDB.getConnection()) {
             PreparedStatement ps = connection.prepareStatement("Select *  from Plane where plane_id = ?");
@@ -78,7 +78,7 @@ public class PlaneRepository implements Repository<Plane> {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean deleteById(int id) {
         int deleteFlag;
         try(Connection connection = ConnectionDB.getConnection()){
             PreparedStatement ps = connection.prepareStatement("Delete from Plane where plane_id = ?");

@@ -1,7 +1,6 @@
 package repositories;
 
 import connect.ConnectionDB;
-import dto.PersonDTO;
 import entity.Passenger;
 import entity.blprnts.Person;
 import mappers.PassengerMapper;
@@ -31,10 +30,10 @@ public class PassengerRepository implements Repository<Person> {
     }
 
     @Override
-    public Passenger read(int id) {
+    public Passenger findById(int id) {
         Passenger person = null;
         try (Connection connection = ConnectionDB.getConnection()) {
-            PreparedStatement ps = connection.prepareStatement("Select *  from Person  where person_id = ?");
+            PreparedStatement ps = connection.prepareStatement("Select * from Person  where person_id = ?");
             ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
             while (rs.next()){
@@ -64,12 +63,9 @@ public class PassengerRepository implements Repository<Person> {
             if (person == null){
                 updateFlag = 0;
             } else {
-                PreparedStatement psUpd = connection.prepareStatement("UPDATE Person SET name = ?, passport = ? where person_id = ?");
-                psUpd.setString(1, entity.getName());
-                psUpd.setInt(2, entity.getPassport());
-                psUpd.setInt(3, person.getId());
+                String sql = "UPDATE Person SET name = ?, passport = ? where person_id = ?";
+                PreparedStatement psUpd = checkFields(entity, person, connection, sql);
                 updateFlag = psUpd.executeUpdate();
-
                 connection.close();
                 ps.close();
                 psUpd.close();
@@ -81,7 +77,7 @@ public class PassengerRepository implements Repository<Person> {
     }
 
     @Override
-    public boolean delete(int id) {
+    public boolean deleteById(int id) {
         int deleteFlag;
         try(Connection connection = ConnectionDB.getConnection()){
             PreparedStatement ps = connection.prepareStatement("Delete from Person where person_id = ?");
@@ -96,12 +92,19 @@ public class PassengerRepository implements Repository<Person> {
         return deleteFlag > 0;
     }
 
-//    public static void main(String[] args) {
-//        PassengerRepository personRepository = new PassengerRepository();
-//        System.out.println(personRepository.read(1));
-////        System.out.println(personRepository.create(new PersonDTO("Ivan2", 1188777666)));
-////        System.out.println(personRepository.read(4));
-////        System.out.println(personRepository.update(new Passenger(4,"Ivan2Change", 1111222222)));
-////        personRepository.delete(3);
-//    }
+    private PreparedStatement checkFields(Person newPerson, Person personForUpd, Connection connection, String sql) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        if (newPerson.getName() != null) {
+            preparedStatement.setString(1, newPerson.getName());
+        } else {
+            preparedStatement.setString(1, personForUpd.getName());
+        }
+        if (newPerson.getPassport() != 0){
+            preparedStatement.setInt(2, newPerson.getPassport());
+        } else {
+            preparedStatement.setInt(2, personForUpd.getPassport());
+        }
+        preparedStatement.setInt(3, personForUpd.getId());
+        return preparedStatement;
+    }
 }
