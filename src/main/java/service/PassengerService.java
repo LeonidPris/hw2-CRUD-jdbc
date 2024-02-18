@@ -12,9 +12,10 @@ import repositories.PassengerRepository;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.stream.Collectors;
 
-public class PassengerService implements IService<Person> {
+public class PassengerService implements IService {
     private final PassengerRepository passengerRepository;
 
     public PassengerService() {

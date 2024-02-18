@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class PlaneService implements IService<Plane>{
+public class PlaneService implements IService{
     private final PlaneRepository planeRepository;
     private final TicketRepository ticketRepository;
 
@@ -38,6 +38,9 @@ public class PlaneService implements IService<Plane>{
     public String findById(int id) throws JsonProcessingException {
         List<Ticket> tickets = ticketRepository.readAllWithPlane(id);
         Plane plane = planeRepository.findById(id);
+        if(plane == null){
+            return null;
+        }
         plane.setTickets(tickets);
         ObjectMapper om = new ObjectMapper();
         return om.writeValueAsString(plane);
