@@ -23,7 +23,7 @@ public class ConnectionDB {
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        String jdbcURL = "jdbc:postgresql://" + Config.SERVER + "/" + Config.DB;
+        String jdbcURL = "jdbc:postgresql://" + Config.SERVER + "/" + Config.DB; // тут лучше через String.format
         connection = DriverManager.getConnection(jdbcURL, Config.LOGIN, Config.PASS);
     }
 

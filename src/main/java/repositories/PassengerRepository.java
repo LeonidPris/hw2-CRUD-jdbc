@@ -40,7 +40,7 @@ public class PassengerRepository implements Repository<Person> {
                 person = PassengerMapper.map(rs);
             }
 
-            connection.close();
+            connection.close(); // это не обязятельн,  try-with-resources же
             ps.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -63,7 +63,7 @@ public class PassengerRepository implements Repository<Person> {
             if (person == null){
                 updateFlag = 0;
             } else {
-                String sql = "UPDATE Person SET name = ?, passport = ? where person_id = ?";
+                String sql = "UPDATE Person SET name = ?, passport = ? where person_id = ?"; // в константу
                 PreparedStatement psUpd = checkFields(entity, person, connection, sql);
                 updateFlag = psUpd.executeUpdate();
                 connection.close();
